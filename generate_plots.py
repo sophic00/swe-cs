@@ -601,37 +601,53 @@ def priority_matrix(ax, df, color, title, n=20):
     ax.axvline(med_c, color="grey", lw=0.9, ls="--", alpha=0.6)
     ax.axhline(med_x, color="grey", lw=0.9, ls="--", alpha=0.6)
 
-    # Quadrant labels
-    xmax = top["churn"].max() * 1.1
-    ymax = top["avg_complexity"].max() * 1.08
+    # Keep quadrant headers pinned to the corners so they don't collide when
+    # medians fall close to the plot edge.
+    label_box = {"facecolor": "white", "edgecolor": "none", "alpha": 0.85, "pad": 1.5}
     ax.text(
-        med_c * 1.02,
-        ymax * 0.95,
+        0.02,
+        0.98,
+        "SIMPLIFY\n(low churn, high complexity)",
+        transform=ax.transAxes,
+        ha="left",
+        va="top",
+        color="goldenrod",
+        fontsize=7,
+        bbox=label_box,
+    )
+    ax.text(
+        0.98,
+        0.98,
         "▲ REFACTOR NOW\n(high churn, high complexity)",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
         color=C_RISK,
         fontsize=7,
         fontweight="bold",
+        bbox=label_box,
     )
     ax.text(
-        0.01 * xmax,
-        ymax * 0.95,
-        "SIMPLIFY\n(low churn, high complexity)",
-        color="goldenrod",
-        fontsize=7,
-    )
-    ax.text(
-        med_c * 1.02,
-        med_x * 0.15,
+        0.98,
+        0.03,
         "REDUCE CHURN\n(high churn, low complexity)",
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
         color="darkorange",
         fontsize=7,
+        bbox=label_box,
     )
     ax.text(
-        0.01 * xmax,
-        med_x * 0.15,
+        0.02,
+        0.03,
         "MONITOR\n(low churn, low complexity)",
+        transform=ax.transAxes,
+        ha="left",
+        va="bottom",
         color=C_SAFE,
         fontsize=7,
+        bbox=label_box,
     )
 
     legend_elements = [
