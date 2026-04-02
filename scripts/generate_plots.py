@@ -191,7 +191,7 @@ fig, axes = plt.subplots(1, 2, figsize=(15, 6))
 hotspot_scatter(axes[0], df_t, C_TRF, "huggingface/transformers")
 hotspot_scatter(axes[1], df_d, C_DJG, "django/django")
 fig.suptitle(
-    "Figure 1 — Hotspot Map: Cyclomatic Complexity vs Churn\n"
+    "Figure 2 — Hotspot Map: Cyclomatic Complexity vs Churn\n"
     "(bubble size ∝ bug-fix commit count)",
     fontsize=13,
     fontweight="bold",
@@ -234,7 +234,7 @@ fig, axes = plt.subplots(1, 2, figsize=(15, 7))
 top_hotspot_bar(axes[0], df_t, C_TRF, "Transformers — Top 15 Hotspot Files")
 top_hotspot_bar(axes[1], df_d, C_DJG, "Django — Top 15 Hotspot Files")
 fig.suptitle(
-    "Figure 2 — Ranked Hotspot Files by Composite Risk Score\n"
+    "Figure 3 — Ranked Hotspot Files by Composite Risk Score\n"
     "(Churn + Complexity + Bug-Fix Density, equally weighted)",
     fontsize=13,
     fontweight="bold",
@@ -273,7 +273,7 @@ top_bar(
 )
 top_bar(axes[1], df_d, "churn", C_DJG, "Commit churn count", "Django — Top 15 by Churn")
 fig.suptitle(
-    "Figure 3 — Files with Highest Commit Churn (change frequency)",
+    "Figure 4 — Files with Highest Commit Churn (change frequency)",
     fontsize=13,
     fontweight="bold",
 )
@@ -304,7 +304,7 @@ top_bar(
     "Django — Top 15 by Complexity",
 )
 fig.suptitle(
-    "Figure 4 — Files with Highest Avg Cyclomatic Complexity",
+    "Figure 5 — Files with Highest Avg Cyclomatic Complexity",
     fontsize=13,
     fontweight="bold",
 )
@@ -335,7 +335,7 @@ top_bar(
     "Django — Top 15 by Bug-Fix Commits",
 )
 fig.suptitle(
-    "Figure 5 — Files Most Frequently Touched by Bug-Fix Commits",
+    "Figure 6 — Files Most Frequently Touched by Bug-Fix Commits",
     fontsize=13,
     fontweight="bold",
 )
@@ -383,7 +383,7 @@ im = corr_heatmap(axes[0], df_t, "Transformers")
 corr_heatmap(axes[1], df_d, "Django")
 fig.colorbar(im, cax=cax, label="Pearson r")
 fig.suptitle(
-    "Figure 6 — Correlation Matrix: Code Metrics", fontsize=13, fontweight="bold"
+    "Figure 4 — Correlation Matrix: Code Metrics", fontsize=13, fontweight="bold"
 )
 fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))
 save("fig06_correlation_heatmap")
@@ -430,7 +430,7 @@ fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 bugfix_ratio_quartile(axes[0], df_t, C_TRF, "Transformers")
 bugfix_ratio_quartile(axes[1], df_d, C_DJG, "Django")
 fig.suptitle(
-    "Figure 7 — Bug-Fix Ratio vs Cyclomatic Complexity Quartile\n"
+    "Figure 5 — Bug-Fix Ratio vs Cyclomatic Complexity Quartile\n"
     "(validates: higher complexity → more bug-fix commits)",
     fontsize=13,
     fontweight="bold",
@@ -461,7 +461,7 @@ for ax, df, color, title in [
     ax.legend()
 
 fig.suptitle(
-    "Figure 8 — Churn Distribution Across Files  (log-scale)\n"
+    "Figure 6 — Churn Distribution Across Files  (log-scale)\n"
     "Power-law tail: a small fraction of files absorb most changes",
     fontsize=13,
     fontweight="bold",
@@ -496,7 +496,7 @@ for ax, df, color, title in [
     ax.legend(title="Risk thresholds")
 
 fig.suptitle(
-    "Figure 9 — Distribution of Avg Cyclomatic Complexity per File\n"
+    "Figure 7 — Distribution of Avg Cyclomatic Complexity per File\n"
     "McCabe thresholds: >10 Moderate risk, >20 High risk",
     fontsize=13,
     fontweight="bold",
@@ -551,7 +551,7 @@ fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 nloc_complexity(axes[0], df_t, C_TRF, "Transformers")
 nloc_complexity(axes[1], df_d, C_DJG, "Django")
 fig.suptitle(
-    "Figure 10 — File Size (NLOC) vs Avg Cyclomatic Complexity\n"
+    "Figure 8 — File Size (NLOC) vs Avg Cyclomatic Complexity\n"
     "(bubble size ∝ churn; dashed = OLS regression)",
     fontsize=13,
     fontweight="bold",
@@ -606,7 +606,7 @@ fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 lines_scatter(axes[0], df_t, C_TRF, "Transformers")
 lines_scatter(axes[1], df_d, C_DJG, "Django")
 fig.suptitle(
-    "Figure 11 — Lines Added vs Lines Deleted per File\n"
+    "Figure 9 — Lines Added vs Lines Deleted per File\n"
     "Files above the diagonal lose more code than they gain (refactoring / removal)",
     fontsize=13,
     fontweight="bold",
@@ -728,7 +728,7 @@ fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 priority_matrix(axes[0], df_t, C_TRF, "Transformers — Remediation Priority Matrix")
 priority_matrix(axes[1], df_d, C_DJG, "Django — Remediation Priority Matrix")
 fig.suptitle(
-    "Figure 12 — Remediation Priority Matrix  (Top 20 Hotspot Files)\n"
+    "Figure 10 — Remediation Priority Matrix  (Top 20 Hotspot Files)\n"
     "Bubble size ∝ bug-fix commit count; stars = recommended action urgency",
     fontsize=13,
     fontweight="bold",
