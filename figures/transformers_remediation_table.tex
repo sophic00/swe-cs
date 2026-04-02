@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Prioritised Remediation Plan -- transformers}
+\label{tab:remediation_transformers}
+\begin{tabular}{c l c c c c p{4.2cm}}
+\toprule
+\# & File & CCN & Churn & Bugs & Risk & Recommended Action \\
+\midrule
+  1 & \texttt{src/transformers/modeling\_utils.py} & 7.3 & 492 & 364 & 2.17 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  2 & \texttt{transformers/generation/utils.py} & 12.8 & 285 & 208 & 1.46 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  3 & \texttt{src/transformers/trainer.py} & 10.3 & 309 & 204 & 1.43 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  4 & \texttt{models/auto/configuration\_auto.py} & 3.0 & 230 & 211 & 1.12 & Split large module; Stabilize interface / add tests \\
+  5 & \texttt{models/auto/modeling\_auto.py} & 1.0 & 240 & 219 & 1.11 & Split large module; Stabilize interface / add tests \\
+  6 & \texttt{src/transformers/\_\_init\_\_.py} & 1.0 & 245 & 186 & 1.03 & Split large module; Stabilize interface / add tests; Targeted bug review \\
+  7 & \texttt{pytorch/question-answering/utils\_qa.py} & 42.0 & 5 & 4 & 1.02 & Refactor complex methods \\
+  8 & \texttt{models/auto/tokenization\_auto.py} & 12.9 & 156 & 132 & 0.99 & Refactor complex methods; Stabilize interface / add tests; Targeted bug review \\
+  9 & \texttt{models/auto/image\_processing\_auto.py} & 8.8 & 178 & 148 & 0.98 & Refactor complex methods; Stabilize interface / add tests; Targeted bug review \\
+  10 & \texttt{transformers/utils/chat\_parsing\_utils.py} & 40.0 & 5 & 5 & 0.98 & Refactor complex methods \\
+\bottomrule
+\end{tabular}
+\end{table}

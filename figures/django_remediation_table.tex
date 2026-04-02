@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Prioritised Remediation Plan -- django}
+\label{tab:remediation_django}
+\begin{tabular}{c l c c c c p{4.2cm}}
+\toprule
+\# & File & CCN & Churn & Bugs & Risk & Recommended Action \\
+\midrule
+  1 & \texttt{db/models/query.py} & 3.8 & 53 & 35 & 2.13 & Split large module; Stabilize interface / add tests \\
+  2 & \texttt{db/models/base.py} & 7.6 & 44 & 32 & 2.01 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  3 & \texttt{models/sql/query.py} & 5.6 & 38 & 33 & 1.85 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  4 & \texttt{models/sql/compiler.py} & 8.4 & 32 & 22 & 1.52 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  5 & \texttt{db/models/expressions.py} & 2.1 & 35 & 27 & 1.51 & Split large module; Stabilize interface / add tests \\
+  6 & \texttt{django/utils/numberformat.py} & 29.0 & 2 & 2 & 1.09 & Refactor complex methods \\
+  7 & \texttt{django/utils/html.py} & 3.0 & 21 & 20 & 1.07 & Stabilize interface / add tests; Targeted bug review \\
+  8 & \texttt{backends/base/schema.py} & 5.8 & 18 & 17 & 1.03 & Refactor complex methods; Split large module; Stabilize interface / add tests \\
+  9 & \texttt{contrib/admin/options.py} & 3.9 & 20 & 15 & 0.94 & Split large module; Stabilize interface / add tests \\
+  10 & \texttt{models/fields/tuple\_lookups.py} & 3.8 & 22 & 13 & 0.92 & Stabilize interface / add tests; Targeted bug review \\
+\bottomrule
+\end{tabular}
+\end{table}
