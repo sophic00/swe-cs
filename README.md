@@ -1,6 +1,6 @@
 # SWE CS Case Study
 
-[![Latest Release](https://img.shields.io/github/v/release/sophic00/swe-cs?label=latest%20release)](https://github.com/sophic00/swe-cs/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/sophic00/swe-cs?include_prereleases&label=latest%20release&cacheSeconds=300)](https://github.com/sophic00/swe-cs/releases/latest)
 
 Latest PDF release: [github.com/sophic00/swe-cs/releases/latest](https://github.com/sophic00/swe-cs/releases/latest)
 

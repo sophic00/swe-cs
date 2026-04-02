@@ -20,6 +20,7 @@
 \usepackage{tabularx}
 \usepackage{placeins}
 \usepackage{longtable}
+\usepackage{needspace}
 
 \definecolor{covernavy}{HTML}{17324D}
 \definecolor{coverblue}{HTML}{2C5E91}
@@ -323,9 +324,10 @@ Each top-ranked file is classified into one of four quadrants based on whether i
 
 Each file then receives a concrete, file-specific recommendation (e.g.\ ``split into smaller modules'', ``add regression tests for edge cases'').
 
+\Needspace{12\baselineskip}
 \subsection{Tools and Environment}
 
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
 \caption{Toolchain used in this study}
 \label{tab:tools}
@@ -555,13 +557,12 @@ Figure~\ref{fig:lines_added_deleted} distinguishes growing files (below the 45\t
 \end{figure}
 
 \FloatBarrier
-\clearpage
 \subsection{\texorpdfstring{RQ\,3}{RQ 3}: Prioritised Remediation Plan}
 
 Figure~\ref{fig:remediation_matrix} classifies the top~20 hotspot files into the four-quadrant remediation model.
 Tables~\ref{tab:plan_transformers} and~\ref{tab:plan_django} present the prioritised remediation plans with file-specific recommended actions.
 
-\begin{figure}[H]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=0.95\textwidth]{plots/fig12_remediation_matrix.png}
 \caption{Remediation priority matrix (top 20 files). Bubble size $\propto$ bug-fix count; star rating = action urgency.}
