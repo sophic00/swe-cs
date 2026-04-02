@@ -8,6 +8,7 @@ Output: ./plots/  (12 PNG files at 150 dpi, ready for LaTeX)
 
 import warnings
 from pathlib import Path
+from typing import cast
 
 import matplotlib
 import matplotlib.colors as mcolors
@@ -47,28 +48,50 @@ C_RISK = "#D62728"  # high-risk red
 C_SAFE = "#2CA02C"  # low-risk green
 ALPHA = 0.72
 
+
+def as_frame(value: object) -> pd.DataFrame:
+    return cast(pd.DataFrame, value)
+
+
+def column(df: pd.DataFrame, name: str) -> pd.Series:
+    return cast(pd.Series, df[name])
+
+
+def top_rows(df: pd.DataFrame, n: int, sort_by: str) -> pd.DataFrame:
+    return as_frame(df.sort_values(by=sort_by, ascending=False).head(n))
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. LOAD & MERGE DATA
 # ══════════════════════════════════════════════════════════════════════════════
 
 
-def load_and_merge(history_csv, complexity_csv):
-    h = pd.read_csv(history_csv)
-    c = pd.read_csv(complexity_csv)
-    h["filename"] = h["filename"].str.replace("\\", "/", regex=False)
-    c["filename"] = c["filename"].str.replace("\\", "/", regex=False)
-    df = pd.merge(h, c, on="filename", suffixes=("_h", "_c"))
-    df = df[df["avg_complexity"] > 0].copy()
+def load_and_merge(history_csv: Path | str, complexity_csv: Path | str) -> pd.DataFrame:
+    h = as_frame(pd.read_csv(history_csv))
+    c = as_frame(pd.read_csv(complexity_csv))
+    h.loc[:, "filename"] = (
+        column(h, "filename").astype(str).str.replace("\\", "/", regex=False)
+    )
+    c.loc[:, "filename"] = (
+        column(c, "filename").astype(str).str.replace("\\", "/", regex=False)
+    )
+    df = as_frame(pd.merge(h, c, on="filename", suffixes=("_h", "_c")))
+    df = as_frame(df[column(df, "avg_complexity") > 0].copy())
     # Normalised scores  (0-1)
     for col in ["churn", "avg_complexity", "bug_fixes"]:
-        mx = df[col].max()
-        df[f"{col}_n"] = df[col] / mx if mx > 0 else 0
+        values = column(df, col)
+        mx = float(values.max())
+        df.loc[:, f"{col}_n"] = values / mx if mx > 0 else 0.0
     # Composite hotspot score  (equal weights)
-    df["hotspot_score"] = (
-        df["churn_n"] + df["avg_complexity_n"] + df["bug_fixes_n"]
+    df.loc[:, "hotspot_score"] = (
+        column(df, "churn_n")
+        + column(df, "avg_complexity_n")
+        + column(df, "bug_fixes_n")
     ) / 3
     # Short label for plots
-    df["label"] = df["filename"].apply(lambda x: "/".join(x.split("/")[-2:]))
+    df.loc[:, "label"] = [
+        "/".join(str(filename).split("/")[-2:]) for filename in column(df, "filename")
+    ]
     return df
 
 
@@ -102,10 +125,13 @@ print("\n[1/12] Hotspot scatter …")
 
 
 def hotspot_scatter(ax, df, color, title, top_n=10):
-    sizes = (df["bug_fixes"] / df["bug_fixes"].max() * 400).clip(lower=10)
+    bug_fixes = column(df, "bug_fixes")
+    churn = column(df, "churn")
+    complexity = column(df, "avg_complexity")
+    sizes = (bug_fixes / float(bug_fixes.max()) * 400).clip(lower=10)
     sc = ax.scatter(
-        df["churn"],
-        df["avg_complexity"],
+        churn,
+        complexity,
         s=sizes,
         c=color,
         alpha=ALPHA,
@@ -113,7 +139,8 @@ def hotspot_scatter(ax, df, color, title, top_n=10):
         edgecolors="white",
     )
     # Quadrant lines (medians)
-    med_x, med_y = df["churn"].median(), df["avg_complexity"].median()
+    med_x = float(churn.median())
+    med_y = float(complexity.median())
     ax.axvline(med_x, color="grey", lw=0.8, ls="--", alpha=0.6)
     ax.axhline(med_y, color="grey", lw=0.8, ls="--", alpha=0.6)
     # Quadrant labels
@@ -128,7 +155,7 @@ def hotspot_scatter(ax, df, color, title, top_n=10):
         alpha=0.8,
     )
     ax.text(
-        0.02 * df["churn"].max(),
+        0.02 * float(churn.max()),
         med_y * 1.02,
         "High Complexity\nLow Churn",
         color="saddlebrown",
@@ -144,7 +171,7 @@ def hotspot_scatter(ax, df, color, title, top_n=10):
         alpha=0.7,
     )
     # Annotate top-N by hotspot score
-    top = df.nlargest(top_n, "hotspot_score")
+    top = top_rows(df, top_n, "hotspot_score")
     for _, row in top.iterrows():
         ax.annotate(
             row["label"],
@@ -180,14 +207,20 @@ print("[2/12] Top hotspot bar chart …")
 
 
 def top_hotspot_bar(ax, df, color, title, n=15):
-    top = df.nlargest(n, "hotspot_score")[["label", "hotspot_score"]].iloc[::-1]
+    top = as_frame(
+        top_rows(df, n, "hotspot_score")[["label", "hotspot_score"]].iloc[::-1]
+    )
     bars = ax.barh(
-        top["label"], top["hotspot_score"], color=color, alpha=0.82, edgecolor="white"
+        column(top, "label"),
+        column(top, "hotspot_score"),
+        color=color,
+        alpha=0.82,
+        edgecolor="white",
     )
     ax.set_xlabel("Composite Hotspot Score  (0–1)")
     ax.set_title(title, fontweight="bold")
     ax.set_xlim(0, 1.05)
-    for bar, val in zip(bars, top["hotspot_score"]):
+    for bar, val in zip(bars, column(top, "hotspot_score")):
         ax.text(
             val + 0.01,
             bar.get_y() + bar.get_height() / 2,
@@ -217,8 +250,14 @@ print("[3/12] Top churn …")
 
 
 def top_bar(ax, df, metric, color, xlabel, title, n=15):
-    top = df.nlargest(n, metric)[["label", metric]].iloc[::-1]
-    ax.barh(top["label"], top[metric], color=color, alpha=0.82, edgecolor="white")
+    top = as_frame(top_rows(df, n, metric)[["label", metric]].iloc[::-1])
+    ax.barh(
+        column(top, "label"),
+        column(top, metric),
+        color=color,
+        alpha=0.82,
+        edgecolor="white",
+    )
     ax.set_xlabel(xlabel)
     ax.set_title(title, fontweight="bold")
 
@@ -313,7 +352,7 @@ print("[6/12] Correlation heatmap …")
 def corr_heatmap(ax, df, title):
     cols = ["churn", "bug_fixes", "avg_complexity", "nloc", "num_functions"]
     nice = ["Churn", "Bug Fixes", "Avg Complexity", "NLOC", "Num Functions"]
-    corr = df[cols].corr()
+    corr = as_frame(df[cols].corr())
     corr.columns = nice
     corr.index = nice
     im = ax.imshow(corr, cmap="RdYlGn", vmin=-1, vmax=1)
@@ -346,7 +385,7 @@ fig.colorbar(im, cax=cax, label="Pearson r")
 fig.suptitle(
     "Figure 6 — Correlation Matrix: Code Metrics", fontsize=13, fontweight="bold"
 )
-fig.tight_layout(rect=[0, 0, 1, 0.95])
+fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))
 save("fig06_correlation_heatmap")
 
 
@@ -357,12 +396,14 @@ print("[7/12] Bug-fix ratio by complexity quartile …")
 
 
 def bugfix_ratio_quartile(ax, df, color, title):
-    df = df.copy()
-    df["bug_ratio"] = df["bug_fixes"] / df["churn"].clip(lower=1)
-    df["ccn_quartile"] = pd.qcut(
-        df["avg_complexity"], 4, labels=["Q1\n(Low)", "Q2", "Q3", "Q4\n(High)"]
+    df = as_frame(df.copy())
+    df.loc[:, "bug_ratio"] = column(df, "bug_fixes") / column(df, "churn").clip(lower=1)
+    df.loc[:, "ccn_quartile"] = pd.qcut(
+        column(df, "avg_complexity"), 4, labels=["Q1\n(Low)", "Q2", "Q3", "Q4\n(High)"]
     )
-    grouped = df.groupby("ccn_quartile", observed=True)["bug_ratio"].mean()
+    grouped = cast(
+        pd.Series, df.groupby("ccn_quartile", observed=True)["bug_ratio"].mean()
+    )
     bars = ax.bar(
         grouped.index,
         grouped.values,
@@ -408,13 +449,14 @@ for ax, df, color, title in [
     (axes[0], df_t, C_TRF, "Transformers"),
     (axes[1], df_d, C_DJG, "Django"),
 ]:
-    ax.hist(df["churn"], bins=50, color=color, alpha=0.75, edgecolor="white", log=True)
+    churn = column(df, "churn")
+    ax.hist(churn, bins=50, color=color, alpha=0.75, edgecolor="white", log=True)
     ax.set_xlabel("Churn (# commits)")
     ax.set_ylabel("File count  (log scale)")
     ax.set_title(title, fontweight="bold")
-    med = df["churn"].median()
+    med = float(churn.median())
     ax.axvline(med, color="black", lw=1.2, ls="--", label=f"Median = {med:.0f}")
-    p90 = df["churn"].quantile(0.9)
+    p90 = float(churn.quantile(0.9))
     ax.axvline(p90, color=C_RISK, lw=1.2, ls=":", label=f"P90 = {p90:.0f}")
     ax.legend()
 
@@ -439,7 +481,13 @@ for ax, df, color, title in [
     (axes[0], df_t, C_TRF, "Transformers"),
     (axes[1], df_d, C_DJG, "Django"),
 ]:
-    ax.hist(df["avg_complexity"], bins=40, color=color, alpha=0.75, edgecolor="white")
+    ax.hist(
+        column(df, "avg_complexity"),
+        bins=40,
+        color=color,
+        alpha=0.75,
+        edgecolor="white",
+    )
     for thresh, (tc, label) in thresholds.items():
         ax.axvline(thresh, color=tc, lw=1.5, ls="--", label=label)
     ax.set_xlabel("Avg Cyclomatic Complexity")
@@ -464,10 +512,13 @@ print("[10/12] NLOC vs Complexity …")
 
 
 def nloc_complexity(ax, df, color, title):
-    sizes = (df["churn"] / df["churn"].max() * 300).clip(lower=8)
+    churn = column(df, "churn")
+    nloc = column(df, "nloc")
+    complexity = column(df, "avg_complexity")
+    sizes = (churn / float(churn.max()) * 300).clip(lower=8)
     ax.scatter(
-        df["nloc"],
-        df["avg_complexity"],
+        nloc,
+        complexity,
         s=sizes,
         c=color,
         alpha=ALPHA,
@@ -475,8 +526,11 @@ def nloc_complexity(ax, df, color, title):
         linewidths=0.3,
     )
     # Regression line
-    slope, intercept, r, p, _ = stats.linregress(df["nloc"], df["avg_complexity"])
-    x_line = np.linspace(0, df["nloc"].quantile(0.98), 100)
+    slope, intercept, r, p, _ = cast(
+        tuple[float, float, float, float, float],
+        stats.linregress(nloc, complexity),
+    )
+    x_line = np.linspace(0, float(nloc.quantile(0.98)), 100)
     ax.plot(
         x_line,
         slope * x_line + intercept,
@@ -513,9 +567,11 @@ print("[11/12] Lines added vs deleted …")
 
 
 def lines_scatter(ax, df, color, title, n=15):
+    lines_added = column(df, "lines_added")
+    lines_deleted = column(df, "lines_deleted")
     ax.scatter(
-        df["lines_added"],
-        df["lines_deleted"],
+        lines_added,
+        lines_deleted,
         c=color,
         alpha=0.45,
         s=20,
@@ -523,14 +579,14 @@ def lines_scatter(ax, df, color, title, n=15):
         linewidths=0.2,
     )
     # 45° reference line
-    mx = max(df["lines_added"].quantile(0.97), df["lines_deleted"].quantile(0.97))
+    mx = max(float(lines_added.quantile(0.97)), float(lines_deleted.quantile(0.97)))
     ax.plot([0, mx], [0, mx], "k--", lw=0.8, alpha=0.5, label="Equal add/delete")
-    ax.set_xlim(0, df["lines_added"].quantile(0.98))
-    ax.set_ylim(0, df["lines_deleted"].quantile(0.98))
+    ax.set_xlim(0, float(lines_added.quantile(0.98)))
+    ax.set_ylim(0, float(lines_deleted.quantile(0.98)))
     # Annotate top by (added+deleted)
-    df = df.copy()
-    df["total_delta"] = df["lines_added"] + df["lines_deleted"]
-    top = df.nlargest(n, "total_delta")
+    df = as_frame(df.copy())
+    df.loc[:, "total_delta"] = column(df, "lines_added") + column(df, "lines_deleted")
+    top = top_rows(df, n, "total_delta")
     for _, row in top.iterrows():
         ax.annotate(
             row["label"],
@@ -566,10 +622,11 @@ print("[12/12] Remediation priority matrix …")
 
 
 def priority_matrix(ax, df, color, title, n=20):
-    df = df.copy()
-    med_c = df["churn"].median()
-    med_x = df["avg_complexity"].median()
-    top = df.nlargest(n, "hotspot_score")
+    df = as_frame(df.copy())
+    med_c = float(column(df, "churn").median())
+    med_x = float(column(df, "avg_complexity").median())
+    top = top_rows(df, n, "hotspot_score")
+    max_bug_fixes = float(column(df, "bug_fixes").max())
 
     def quadrant(row):
         hi_churn = row["churn"] >= med_c
@@ -587,7 +644,7 @@ def priority_matrix(ax, df, color, title, n=20):
         ax.scatter(
             row["churn"],
             row["avg_complexity"],
-            s=row["bug_fixes"] / df["bug_fixes"].max() * 500 + 30,
+            s=row["bug_fixes"] / max_bug_fixes * 500 + 30,
             color=c,
             alpha=0.85,
             edgecolors="white",
@@ -687,12 +744,14 @@ print("\n───────────────────────�
 print("TOP 10 HOTSPOTS — TRANSFORMERS")
 print("──────────────────────────────────────────────────────────────────")
 cols_show = ["label", "churn", "bug_fixes", "avg_complexity", "nloc", "hotspot_score"]
-print(df_t.nlargest(10, "hotspot_score")[cols_show].to_string(index=False))
+top_transformers = as_frame(top_rows(df_t, 10, "hotspot_score")[cols_show])
+print(top_transformers.to_string(index=False))
 
 print("\n──────────────────────────────────────────────────────────────────")
 print("TOP 10 HOTSPOTS — DJANGO")
 print("──────────────────────────────────────────────────────────────────")
-print(df_d.nlargest(10, "hotspot_score")[cols_show].to_string(index=False))
+top_django = as_frame(top_rows(df_d, 10, "hotspot_score")[cols_show])
+print(top_django.to_string(index=False))
 
 # Stats for LaTeX
 print("\n── STATS ──")

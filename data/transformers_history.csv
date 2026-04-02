@@ -1,14 +1,11 @@
 filename,churn,bug_fixes,lines_added,lines_deleted
-src/transformers/models/deprecated/_archive_maps.py,2,2,15,0
-src/transformers/models/musicgen/configuration_musicgen.py,17,12,160,245
-src/transformers/models/musicgen/modeling_musicgen.py,92,70,1485,1832
-src/transformers/models/musicgen_melody/configuration_musicgen_melody.py,15,11,164,257
-src/transformers/models/musicgen_melody/modeling_musicgen_melody.py,92,73,1346,1650
 src/transformers/models/wav2vec2/tokenization_wav2vec2.py,18,13,178,437
 src/transformers/modeling_utils.py,492,364,10155,9999
 src/transformers/models/bert/modeling_bert.py,62,43,1222,1695
 src/transformers/models/encoder_decoder/modeling_encoder_decoder.py,33,26,139,354
 src/transformers/models/marian/modeling_marian.py,63,46,931,1530
+src/transformers/models/musicgen/modeling_musicgen.py,91,69,1089,1822
+src/transformers/models/musicgen_melody/modeling_musicgen_melody.py,91,72,972,1641
 src/transformers/generation/logits_process.py,50,37,1616,640
 src/transformers/models/whisper/generation_whisper.py,60,48,1071,664
 examples/pytorch/text-classification/run_classification.py,34,7,85,104
@@ -161,6 +158,7 @@ examples/flax/language-modeling/t5_tokenizer_model.py,3,2,11,6
 setup.py,167,69,408,518
 src/transformers/convert_slow_tokenizer.py,40,33,922,296
 src/transformers/dependency_versions_table.py,118,57,125,123
+src/transformers/models/deprecated/_archive_maps.py,1,1,9,0
 src/transformers/models/gpt_neox/tokenization_gpt_neox_fast.py,10,7,134,42
 src/transformers/models/olmo/__init__.py,3,2,67,40
 src/transformers/models/olmo/configuration_olmo.py,25,21,309,217
@@ -739,7 +737,9 @@ src/transformers/models/mpt/modeling_mpt.py,35,24,317,498
 src/transformers/models/mra/__init__.py,2,0,9,50
 src/transformers/models/mra/configuration_mra.py,12,7,56,117
 src/transformers/models/musicgen/__init__.py,2,0,8,47
+src/transformers/models/musicgen/configuration_musicgen.py,16,11,143,245
 src/transformers/models/musicgen_melody/__init__.py,2,1,6,69
+src/transformers/models/musicgen_melody/configuration_musicgen_melody.py,14,10,146,254
 src/transformers/models/mvp/__init__.py,3,1,12,63
 src/transformers/models/mvp/modeling_mvp.py,47,33,646,1025
 src/transformers/models/nat/__init__.py,1,0,2,4

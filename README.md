@@ -55,6 +55,18 @@ What it does:
 After the plots exist, build the PDF with:
 
 ```bash
+make pdf
+```
+
+To build and open it in Firefox:
+
+```bash
+make open
+```
+
+The `Makefile` runs the equivalent LaTeX commands below:
+
+```bash
 pdflatex -interaction=nonstopmode report.tex
 pdflatex -interaction=nonstopmode report.tex
 ```
