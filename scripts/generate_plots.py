@@ -1,12 +1,13 @@
 """
 Technical Debt / Hotspot Analysis — Plot Generator
 Repos: huggingface/transformers  &  django/django
-Run: python generate_plots.py
+Run: python scripts/generate_plots.py
+Input: ./data/*.csv
 Output: ./plots/  (12 PNG files at 150 dpi, ready for LaTeX)
 """
 
-import os
 import warnings
+from pathlib import Path
 
 import matplotlib
 import matplotlib.colors as mcolors
@@ -33,7 +34,11 @@ matplotlib.rcParams.update(
     }
 )
 
-os.makedirs("plots", exist_ok=True)
+ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "data"
+PLOTS_DIR = ROOT / "plots"
+
+PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Colour palette ────────────────────────────────────────────────────────────
 C_TRF = "#E8601C"  # transformers — warm orange
@@ -68,12 +73,12 @@ def load_and_merge(history_csv, complexity_csv):
 
 
 df_t = load_and_merge(
-    "./transformers_history.csv",
-    "./transformers_complexity.csv",
+    DATA_DIR / "transformers_history.csv",
+    DATA_DIR / "transformers_complexity.csv",
 )
 df_d = load_and_merge(
-    "./django_history.csv",
-    "./django_complexity.csv",
+    DATA_DIR / "django_history.csv",
+    DATA_DIR / "django_complexity.csv",
 )
 
 print(f"Transformers merged: {len(df_t)} files")
@@ -84,7 +89,7 @@ print(f"Django       merged: {len(df_d)} files")
 # HELPER — save figure
 # ══════════════════════════════════════════════════════════════════════════════
 def save(name):
-    path = f"plots/{name}.png"
+    path = PLOTS_DIR / f"{name}.png"
     plt.savefig(path)
     plt.close()
     print(f"  Saved → {path}")

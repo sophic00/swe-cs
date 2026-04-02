@@ -213,9 +213,9 @@ Dev.\ cadence & Stable, release-driven      & Rapid, model-driven \\
 Two CSV files were generated per repository using custom Python scripts (see Section~\ref{sec:method}):
 
 \begin{enumerate}[leftmargin=2em]
-  \item \textbf{Complexity dataset} (\texttt{*\_complexity.csv}): one row per source file, containing NLOC, token count, average cyclomatic complexity, and function count.
+  \item \textbf{Complexity dataset} (\texttt{data/*\_complexity.csv}): one row per source file, containing NLOC, token count, average cyclomatic complexity, and function count.
         Django: 857 files; Transformers: 2\,757 files.
-  \item \textbf{History dataset} (\texttt{*\_history.csv}): one row per file that was modified at least once in the past two years, containing churn (commit count), bug-fix commit count, lines added, and lines deleted.
+  \item \textbf{History dataset} (\texttt{data/*\_history.csv}): one row per file that was modified at least once in the past two years, containing churn (commit count), bug-fix commit count, lines added, and lines deleted.
         Django: 430 files; Transformers: 3\,474 files.
 \end{enumerate}
 
@@ -241,11 +241,12 @@ The following artifacts were produced during the study:
 \endfoot
 \bottomrule
 \endlastfoot
-\texttt{extract\_complexity.py} & Runs \texttt{lizard} over each repo; outputs static-analysis CSV \\
-\texttt{extract\_history.py}    & Uses \texttt{PyDriller} to mine 2-year Git history; outputs churn CSV \\
-\texttt{generate\_plots.py}     & Merges datasets, computes hotspot scores, produces 12 analytical plots \\
-\texttt{*\_complexity.csv}      & Raw static-analysis results (per repo) \\
-\texttt{*\_history.csv}         & Raw history-mining results (per repo) \\
+\texttt{scripts/extract\_complexity.py} & Runs \texttt{lizard} over each repo; outputs static-analysis CSV \\
+\texttt{scripts/extract\_history.py}    & Uses \texttt{PyDriller} to mine 2-year Git history; outputs churn CSV \\
+\texttt{scripts/generate\_plots.py}     & Merges datasets, computes hotspot scores, produces 12 analytical plots \\
+\texttt{scripts/run\_pipeline.py}       & End-to-end runner: clones repos, regenerates CSVs, and renders plots \\
+\texttt{data/*\_complexity.csv}         & Raw static-analysis results (per repo) \\
+\texttt{data/*\_history.csv}            & Raw history-mining results (per repo) \\
 \texttt{plots/fig01\,...\,fig12} & 12 PNG figures used in this report \\
 \texttt{report.tex}             & This document (LaTeX source) \\
 \end{longtable}
@@ -278,10 +279,10 @@ Classify into quadrants $\rightarrow$ assign actions $\rightarrow$ produce prior
 \subsection{Phase 1: Data Collection}
 
 \paragraph{Static analysis.}
-The script \texttt{extract\_complexity.py} invokes \texttt{lizard}~\cite{yin2023} on each cloned repository, excluding test directories (\texttt{*/tests/*}, \texttt{*/test\_*}). For every Python file it records NLOC, token count, average CCN across all functions, and function count.
+The script \texttt{scripts/extract\_complexity.py} invokes \texttt{lizard}~\cite{yin2023} on each cloned repository, excluding test directories (\texttt{*/tests/*}, \texttt{*/test\_*}). For every Python file it records NLOC, token count, average CCN across all functions, and function count.
 
 \paragraph{History mining.}
-The script \texttt{extract\_history.py} uses \texttt{PyDriller}~\cite{spadini2018} to traverse every commit from the past two years.
+The script \texttt{scripts/extract\_history.py} uses \texttt{PyDriller}~\cite{spadini2018} to traverse every commit from the past two years.
 For each modified Python file (excluding tests), it increments the churn counter and, if the commit message contains any of six bug-related keywords (\texttt{fix}, \texttt{bug}, \texttt{issue}, \texttt{resolve}, \texttt{patch}, \texttt{error}), increments the bug-fix counter.
 It also accumulates total lines added and deleted.
 

@@ -10,5 +10,13 @@ wheels/
 .venv
 
 # Repos
+repos/
 django/
 transformers/
+
+# LaTeX build outputs
+report.aux
+report.log
+report.out
+report.toc
+report.pdf
