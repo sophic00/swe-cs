@@ -44,33 +44,47 @@
 \pagenumbering{Alph}
 \begin{titlepage}
 \centering
-\vspace*{0.5cm}
 
-\includegraphics[width=3cm]{VIT_logo.png}
+\vspace*{0.8cm}
 
-\vspace{1cm}
+{\LARGE\bfseries Technical Debt and Hotspot Identification:\\[4pt]
+Complexity, Churn, and Code Smell Analysis\par}
 
-{\Huge\bfseries Technical Debt and Hotspot
-Identification in Open-Source
-Software Projects\par}
+\vspace{0.6cm}
 
-\vspace{1cm}
-{\Large A Case Study on \texttt{django/django} and \texttt{huggingface/transformers}\par}
+{\large A Case Study on Evaluating Hotspot Identification\\
+in \texttt{django/django} and \texttt{huggingface/transformers}\par}
 
-\vspace{0.8cm}
-{\large Software Engineering --- Case Study Report\par}
+\vspace{1.2cm}
 
-\vspace{2cm}
+\includegraphics[width=4.5cm]{VIT_logo.png}
 
-\begin{tabular}{rl}
-\textbf{Name:}                & Vaibhav Sijaria \\[8pt]
-\textbf{Registration Number:} & 23BCI0063 \\[8pt]
-\textbf{Course:}              & Software Engineering \\[8pt]
-\textbf{Date:}                & April 2026 \\
+\vspace{1.2cm}
+
+\begin{tabular}{r@{\hspace{6pt}:\hspace{6pt}}l}
+\textbf{Course}          & Software Engineering \\[4pt]
+\textbf{Case Study No}   & 12 \\
 \end{tabular}
 
+\vspace{1cm}
+
+{\large\bfseries Submitted By\par}
+
+\vspace{0.4cm}
+
+\begin{tabular}{r@{\hspace{6pt}:\hspace{6pt}}l}
+\textbf{Name}     & Vaibhav Sijaria \\[4pt]
+\textbf{Reg.\ No} & 23BCI0063 \\
+\end{tabular}
+
+\vspace{0.8cm}
+
+{\textbf{Date:} 6\textsuperscript{th} April 2026\par}
+
 \vfill
-{\large VIT Vellore}
+
+{\large Vellore Institute of Technology\par}
+
 \end{titlepage}
 
 \newpage
@@ -186,12 +200,10 @@ After inner-joining the two datasets on filename and filtering out files with ze
 
 \subsection{Artifact Overview}
 
-Table~\ref{tab:artifacts} lists every artifact produced during the study.
+The following artifacts were produced during the study:
 
-\begin{table}[!htb]
-\centering
-\caption{Project artifacts and their roles}
-\label{tab:artifacts}
+\vspace{0.3em}
+\noindent
 \begin{tabularx}{\textwidth}{lX}
 \toprule
 \textbf{Artifact} & \textbf{Description} \\
@@ -199,15 +211,15 @@ Table~\ref{tab:artifacts} lists every artifact produced during the study.
 \texttt{extract\_complexity.py} & Runs \texttt{lizard} over each repo; outputs static-analysis CSV \\
 \texttt{extract\_history.py}    & Uses \texttt{PyDriller} to mine 2-year Git history; outputs churn CSV \\
 \texttt{generate\_plots.py}     & Merges datasets, computes hotspot scores, produces 12 analytical plots \\
-\texttt{django\_complexity.csv} / \texttt{transformers\_complexity.csv} & Raw static-analysis results \\
-\texttt{django\_history.csv} / \texttt{transformers\_history.csv}       & Raw history-mining results \\
+\texttt{*\_complexity.csv}      & Raw static-analysis results (per repo) \\
+\texttt{*\_history.csv}         & Raw history-mining results (per repo) \\
 \texttt{plots/fig01\,...\,fig12} & 12 PNG figures used in this report \\
 \texttt{report.tex}             & This document (LaTeX source) \\
 \bottomrule
 \end{tabularx}
-\end{table}
-
-\FloatBarrier
+\captionof{table}{Project artifacts and their roles}
+\label{tab:artifacts}
+\vspace{0.5em}
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Method}
 \label{sec:method}
@@ -515,6 +527,7 @@ Figure~\ref{fig:lines_added_deleted} distinguishes growing files (below the 45\t
 \subsection{\texorpdfstring{RQ\,3}{RQ 3}: Prioritised Remediation Plan}
 
 Figure~\ref{fig:remediation_matrix} classifies the top~20 hotspot files into the four-quadrant remediation model.
+Tables~\ref{tab:plan_transformers} and~\ref{tab:plan_django} present the prioritised remediation plans with file-specific recommended actions.
 
 \begin{figure}[!htb]
 \centering
@@ -522,10 +535,6 @@ Figure~\ref{fig:remediation_matrix} classifies the top~20 hotspot files into the
 \caption{Remediation priority matrix (top 20 files). Bubble size $\propto$ bug-fix count; star rating = action urgency.}
 \label{fig:remediation_matrix}
 \end{figure}
-
-Tables~\ref{tab:plan_transformers} and~\ref{tab:plan_django} present the prioritised remediation plans with file-specific recommended actions.
-
-\FloatBarrier
 
 \begin{table}[!htb]
 \centering
