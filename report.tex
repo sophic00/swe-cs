@@ -19,6 +19,8 @@
 \usepackage{url}
 \usepackage{tabularx}
 \usepackage{placeins}
+\usepackage{needspace}
+\usepackage{longtable}
 
 \definecolor{covernavy}{HTML}{17324D}
 \definecolor{coverblue}{HTML}{2C5E91}
@@ -224,12 +226,22 @@ After inner-joining the two datasets on filename and filtering out files with ze
 
 The following artifacts were produced during the study:
 
-\vspace{0.3em}
-\noindent
-\begin{tabularx}{\textwidth}{lX}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{@{}p{0.30\textwidth}p{0.66\textwidth}@{}}
+\caption{Project artifacts and their roles}\label{tab:artifacts}\\
 \toprule
 \textbf{Artifact} & \textbf{Description} \\
 \midrule
+\endfirsthead
+\toprule
+\textbf{Artifact} & \textbf{Description} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
 \texttt{extract\_complexity.py} & Runs \texttt{lizard} over each repo; outputs static-analysis CSV \\
 \texttt{extract\_history.py}    & Uses \texttt{PyDriller} to mine 2-year Git history; outputs churn CSV \\
 \texttt{generate\_plots.py}     & Merges datasets, computes hotspot scores, produces 12 analytical plots \\
@@ -237,11 +249,8 @@ The following artifacts were produced during the study:
 \texttt{*\_history.csv}         & Raw history-mining results (per repo) \\
 \texttt{plots/fig01\,...\,fig12} & 12 PNG figures used in this report \\
 \texttt{report.tex}             & This document (LaTeX source) \\
-\bottomrule
-\end{tabularx}
-\captionof{table}{Project artifacts and their roles}
-\label{tab:artifacts}
-\vspace{0.5em}
+\end{longtable}
+
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Method}
 \label{sec:method}
