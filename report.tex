@@ -21,6 +21,7 @@
 \usepackage{placeins}
 \usepackage{longtable}
 \usepackage{needspace}
+\usepackage{tikz}
 
 \definecolor{covernavy}{HTML}{17324D}
 \definecolor{coverblue}{HTML}{2C5E91}
@@ -39,7 +40,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small Technical Debt \& Hotspot Identification}
-\fancyhead[R]{\small Vaibhav Sijaria --- 23BCI0063}
+\fancyhead[R]{\small Vaibhav Sijaria, 23BCI0063}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -51,27 +52,40 @@
 \pagenumbering{Alph}
 \begin{titlepage}
 \thispagestyle{empty}
+
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[covernavy]
+    (current page.north west) rectangle ([yshift=-0.7cm]current page.north east);
+  \fill[covergold]
+    ([yshift=-0.7cm]current page.north west) rectangle ([yshift=-0.85cm]current page.north east);
+  \fill[coverblue]
+    (current page.south west) rectangle ([yshift=0.8cm]current page.south east);
+  \node[anchor=south, text=white, font=\small\bfseries]
+    at ([yshift=0.18cm]current page.south)
+    {School of Computer Science and Engineering (SCOPE)};
+\end{tikzpicture}
+
 \centering
 
-\vspace*{0.25cm}
+\vspace*{0.7cm}
 
 {\Large\bfseries\color{covernavy}VELLORE INSTITUTE OF TECHNOLOGY\par}
 \vspace{0.15cm}
 {\normalsize\color{coverblue}Software Engineering Case Study Report\par}
-\vspace{0.28cm}
-{\color{covergold}\rule{0.72\textwidth}{1.2pt}\par}
+\vspace{0.3cm}
+{\color{covergold}\rule{0.72\textwidth}{1.4pt}\par}
 
-\vspace{0.5cm}
+\vspace{0.45cm}
 \includegraphics[width=3.15cm]{VIT_logo.png}
 
-\vspace{0.55cm}
+\vspace{0.5cm}
 {\Large\bfseries\color{coverblue}Case Study No.\ 12\par}
 \vspace{0.22cm}
 {\LARGE\bfseries\color{covernavy}Technical Debt and Hotspot Identification\par}
 \vspace{0.12cm}
 {\large\color{coverblue}Complexity, Churn, and Code Smell Analysis\par}
 
-\vspace{0.42cm}
+\vspace{0.4cm}
 \begin{minipage}{0.84\textwidth}
 \centering
 \color{black!75}
@@ -81,33 +95,42 @@ priorities in \texttt{django/django} and
 \texttt{huggingface/transformers}.
 \end{minipage}
 
-\vspace{0.7cm}
+\vspace{0.65cm}
 \makebox[\textwidth][c]{%
 \fcolorbox{coverblue}{coverpanel}{%
-\begin{minipage}[t]{0.62\textwidth}
+\begin{minipage}[t]{0.82\textwidth}
+\vspace{0.25cm}
+\begin{minipage}[t]{0.44\textwidth}
 \raggedright
 \small
-{\bfseries Course\par}
+{\bfseries\color{covernavy}Course\par}
 Software Engineering\par
-\vspace{0.22cm}
-{\bfseries Submitted By\par}
+\vspace{0.2cm}
+{\bfseries\color{covernavy}Submitted By\par}
 Vaibhav Sijaria\par
-\vspace{0.22cm}
-{\bfseries Registration No.\par}
+\vspace{0.2cm}
+{\bfseries\color{covernavy}Registration No.\par}
 23BCI0063\par
-\vspace{0.22cm}
-{\bfseries Submission Date\par}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.50\textwidth}
+\raggedright
+\small
+{\bfseries\color{covernavy}Submission Date\par}
 6 April 2026\par
-\vspace{0.22cm}
-{\bfseries Focus\par}
-Hotspot analysis using complexity, churn, and bug-fix history\par
+\vspace{0.2cm}
+{\bfseries\color{covernavy}Focus\par}
+Hotspot analysis using complexity,\newline churn, and bug-fix history\par
+\vspace{0.2cm}
+{\bfseries\color{covernavy}Repository\par}
+\url{https://github.com/sophic00/swe-cs}\par
+\end{minipage}%
+\vspace{0.25cm}
 \end{minipage}%
 }%
 }
 
 \vfill
-
-{\normalsize\color{covernavy}\bfseries School of Computer Science and Engineering (SCOPE)\par}
 
 \end{titlepage}
 
@@ -121,7 +144,7 @@ Hotspot analysis using complexity, churn, and bug-fix history\par
 \section{Aim}
 \label{sec:aim}
 
-The goal of this case study is to apply established technical-debt and hotspot-identification techniques to two prominent open-source Python repositories---\texttt{django/django} (a mature web framework) and \texttt{huggingface/transformers} (a fast-moving machine-learning library)---in order to rank their source files by defect risk, validate those rankings against historical bug-fix evidence, and propose a data-driven remediation plan.
+The goal of this case study is to apply established technical-debt and hotspot-identification techniques to two prominent open-source Python repositories, \texttt{django/django} (a mature web framework) and \texttt{huggingface/transformers} (a fast-moving machine-learning library), in order to rank their source files by defect risk, validate those rankings against historical bug-fix evidence, and propose a data-driven remediation plan.
 
 Concretely, the study pursues three objectives:
 
@@ -151,7 +174,7 @@ The scope is deliberately bounded: all data collection and analysis were carried
 Cunningham~\cite{cunningham1992} introduced the \emph{technical debt} metaphor in 1992 to describe how expedient but imperfect code decisions create an implicit cost that must be repaid through future refactoring.
 Kruchten et al.~\cite{kruchten2012} later formalised a taxonomy that distinguishes \emph{code debt}, \emph{design debt}, \emph{testing debt}, and \emph{documentation debt}.
 Fowler~\cite{fowler2009} further distinguished between \emph{deliberate} and \emph{inadvertent} debt and between \emph{reckless} and \emph{prudent} debt, noting that even prudent decisions can accumulate debt over time.
-This study focuses on \textbf{code-level debt}---files whose structural complexity and change patterns suggest elevated defect risk.
+This study focuses on \textbf{code-level debt}: files whose structural complexity and change patterns suggest elevated defect risk.
 
 \subsection{Cyclomatic Complexity as a Risk Indicator}
 
@@ -162,7 +185,7 @@ We adopt the \texttt{lizard} static-analysis tool, which computes McCabe complex
 
 \subsection{Code Churn and Defect Prediction}
 
-Nagappan and Ball~\cite{nagappan2005} demonstrated that \emph{relative code churn}---the frequency and volume of changes to a file---is among the strongest predictors of post-release defects in large systems.
+Nagappan and Ball~\cite{nagappan2005} demonstrated that \emph{relative code churn} (the frequency and volume of changes to a file) is among the strongest predictors of post-release defects in large systems.
 Their study of Windows Server 2003 found that churn-based models outperformed size-based models in predictive accuracy.
 Hassan~\cite{hassan2009} extended this line of work by showing that the \emph{entropy of changes} (how spread out the modifications are) further improves fault-proneness prediction.
 
@@ -170,7 +193,7 @@ Hassan~\cite{hassan2009} extended this line of work by showing that the \emph{en
 
 Tornhill~\cite{tornhill2015} synthesised complexity and churn research into a practical technique he calls \emph{hotspot analysis}: files that are \emph{both} complex and frequently changed are the ones most likely to harbour latent defects.
 The key insight is that high complexity is tolerable in stable code (it rarely triggers bugs if nobody touches it), and high churn is manageable in simple code (simple changes are less likely to introduce faults).
-The dangerous intersection---high complexity \emph{and} high churn---defines a hotspot.
+The dangerous intersection, high complexity \emph{and} high churn, defines a hotspot.
 
 \subsection{Mining Software Repositories for Bug-Fix Patterns}
 
@@ -180,7 +203,7 @@ While this keyword-based approach is imperfect (it may miss some fixes and mis-c
 
 \subsection{Code Smells}
 
-Fowler and Beck~\cite{fowlerbeck1999} catalogued recurring structural problems---\emph{code smells}---that indicate deeper design issues.
+Fowler and Beck~\cite{fowlerbeck1999} catalogued recurring structural problems (\emph{code smells}) that indicate deeper design issues.
 Relevant smells for this study include \emph{Long Method}, \emph{God Class} (or God Module), and \emph{Shotgun Surgery} (a single change requiring edits to many files).
 Large files with many functions and high complexity are symptomatic of God Modules, while files with extreme churn and high lines-added/deleted ratios suggest Shotgun Surgery.
 
@@ -316,10 +339,10 @@ Three validation strategies test whether the hotspot score reflects genuine defe
 Each top-ranked file is classified into one of four quadrants based on whether its churn and complexity fall above or below the project-wide median:
 
 \begin{itemize}[leftmargin=2em]
-  \item \textbf{Refactor Now} --- above-median churn \emph{and} above-median complexity.
-  \item \textbf{Reduce Churn} --- above-median churn, below-median complexity.
-  \item \textbf{Simplify} --- below-median churn, above-median complexity.
-  \item \textbf{Monitor} --- both below median.
+  \item \textbf{Refactor Now}: above-median churn \emph{and} above-median complexity.
+  \item \textbf{Reduce Churn}: above-median churn, below-median complexity.
+  \item \textbf{Simplify}: below-median churn, above-median complexity.
+  \item \textbf{Monitor}: both below median.
 \end{itemize}
 
 Each file then receives a concrete, file-specific recommendation (e.g.\ ``split into smaller modules'', ``add regression tests for edge cases'').
@@ -406,7 +429,7 @@ Figure~\ref{fig:top_hotspots} ranks the top~15 files by composite hotspot score,
 \begin{table}[!htb]
 \centering
 \footnotesize
-\caption{Top 10 hotspot files --- Transformers}
+\caption{Top 10 hotspot files, Transformers}
 \label{tab:top_transformers}
 \begin{tabular}{clcccc}
 \toprule
@@ -429,7 +452,7 @@ Figure~\ref{fig:top_hotspots} ranks the top~15 files by composite hotspot score,
 \begin{table}[!htb]
 \centering
 \footnotesize
-\caption{Top 10 hotspot files --- Django}
+\caption{Top 10 hotspot files, Django}
 \label{tab:top_django}
 \begin{tabular}{clcccc}
 \toprule
@@ -450,9 +473,9 @@ Figure~\ref{fig:top_hotspots} ranks the top~15 files by composite hotspot score,
 \end{table}
 
 \textbf{Key observations.}
-In \textbf{Transformers}, the top three hotspots---\texttt{modeling\_utils.py}, \texttt{generation/utils.py}, and \texttt{trainer.py}---are all core infrastructure files that every model depends on.
+In \textbf{Transformers}, the top three hotspots (\texttt{modeling\_utils.py}, \texttt{generation/utils.py}, and \texttt{trainer.py}) are all core infrastructure files that every model depends on.
 Their high churn stems from the library's rapid model-addition cadence: each new architecture touches these utilities.
-Interestingly, files~7 and~10 (\texttt{utils\_qa.py}, \texttt{chat\_parsing\_utils.py}) have very low churn but extremely high complexity (CCN\,$>$\,40), representing a different kind of risk---latent complexity that will become dangerous the moment the files need to change.
+Interestingly, files~7 and~10 (\texttt{utils\_qa.py}, \texttt{chat\_parsing\_utils.py}) have very low churn but extremely high complexity (CCN\,$>$\,40), representing a different kind of risk: latent complexity that will become dangerous the moment the files need to change.
 
 In \textbf{Django}, the hotspot list is dominated by the ORM layer (\texttt{db/models/}, \texttt{db/sql/}).
 This is consistent with the well-known difficulty of maintaining a database abstraction layer across multiple backends (SQLite, PostgreSQL, MySQL, Oracle).
@@ -500,7 +523,7 @@ Figure~\ref{fig:bugfix_quartile} groups files into four complexity quartiles and
 \end{figure}
 
 In both projects, the Q4 (highest-complexity) group has a meaningfully higher bug-fix ratio than Q1.
-This confirms that, holding churn constant, complex code requires proportionally more corrective maintenance---supporting McCabe's original thesis~\cite{mccabe1976} and Basili and Perricone's empirical findings~\cite{basili1984}.
+This confirms that, holding churn constant, complex code requires proportionally more corrective maintenance, supporting McCabe's original thesis~\cite{mccabe1976} and Basili and Perricone's empirical findings~\cite{basili1984}.
 
 \subsubsection{Top-File Overlap}
 
@@ -543,7 +566,7 @@ Figure~\ref{fig:nloc_complexity} plots NLOC against average CCN (bubble size $\p
 \label{fig:nloc_complexity}
 \end{figure}
 
-Files with NLOC\,$>$\,1000 and elevated complexity---such as \texttt{modeling\_utils.py} (2\,908~NLOC) and \texttt{trainer.py} (2\,928~NLOC) in Transformers---are prime candidates for module decomposition.
+Files with NLOC\,$>$\,1000 and elevated complexity, such as \texttt{modeling\_utils.py} (2\,908~NLOC) and \texttt{trainer.py} (2\,928~NLOC) in Transformers, are prime candidates for module decomposition.
 
 \subsubsection{Lines Added vs.\ Lines Deleted}
 
@@ -572,7 +595,7 @@ Tables~\ref{tab:plan_transformers} and~\ref{tab:plan_django} present the priorit
 \begin{table}[H]
 \centering
 \footnotesize
-\caption{Prioritised remediation plan --- Transformers (top 10)}
+\caption{Prioritised remediation plan, Transformers (top 10)}
 \label{tab:plan_transformers}
 \begin{tabular}{cl c c c p{5cm}}
 \toprule
@@ -595,7 +618,7 @@ Tables~\ref{tab:plan_transformers} and~\ref{tab:plan_django} present the priorit
 \begin{table}[H]
 \centering
 \footnotesize
-\caption{Prioritised remediation plan --- Django (top 10)}
+\caption{Prioritised remediation plan, Django (top 10)}
 \label{tab:plan_django}
 \begin{tabular}{cl c c c p{5cm}}
 \toprule
@@ -660,7 +683,7 @@ The study examines only two Python repositories.
 The hotspot technique is language-agnostic in principle, but the specific metric thresholds (e.g.\ McCabe's CCN=10 boundary) were calibrated on C/Fortran code~\cite{mccabe1976} and may not transfer directly to Python, where language idioms like list comprehensions can compress control flow.
 
 \paragraph{Confounding factors.}
-Churn is partly a function of module centrality---core files are changed more often simply because they are imported by more modules.
+Churn is partly a function of module centrality: core files are changed more often simply because they are imported by more modules.
 Separating ``architectural churn'' from ``defect-induced churn'' would require finer-grained commit classification, which we leave to future work.
 
 \paragraph{Reproducibility.}
