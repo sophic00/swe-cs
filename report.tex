@@ -147,39 +147,39 @@ The scope is deliberately bounded: all data collection and analysis were carried
 
 \subsection{Technical Debt}
 
-Cunningham~[1] introduced the \emph{technical debt} metaphor in 1992 to describe how expedient but imperfect code decisions create an implicit cost that must be repaid through future refactoring.
-Kruchten et al.~[7] later formalised a taxonomy that distinguishes \emph{code debt}, \emph{design debt}, \emph{testing debt}, and \emph{documentation debt}.
-Fowler~[8] further distinguished between \emph{deliberate} and \emph{inadvertent} debt and between \emph{reckless} and \emph{prudent} debt, noting that even prudent decisions can accumulate debt over time.
+Cunningham~\cite{cunningham1992} introduced the \emph{technical debt} metaphor in 1992 to describe how expedient but imperfect code decisions create an implicit cost that must be repaid through future refactoring.
+Kruchten et al.~\cite{kruchten2012} later formalised a taxonomy that distinguishes \emph{code debt}, \emph{design debt}, \emph{testing debt}, and \emph{documentation debt}.
+Fowler~\cite{fowler2009} further distinguished between \emph{deliberate} and \emph{inadvertent} debt and between \emph{reckless} and \emph{prudent} debt, noting that even prudent decisions can accumulate debt over time.
 This study focuses on \textbf{code-level debt}---files whose structural complexity and change patterns suggest elevated defect risk.
 
 \subsection{Cyclomatic Complexity as a Risk Indicator}
 
-McCabe~[2] proposed cyclomatic complexity (CCN) as a count of linearly independent paths through a function's control-flow graph.
+McCabe~\cite{mccabe1976} proposed cyclomatic complexity (CCN) as a count of linearly independent paths through a function's control-flow graph.
 Higher CCN implies more branches and, consequently, more potential for faults.
-Empirical work by Basili and Perricone~[3] confirmed that modules with CCN~$>10$ are significantly more defect-prone, a threshold that remains widely cited.
+Empirical work by Basili and Perricone~\cite{basili1984} confirmed that modules with CCN~$>10$ are significantly more defect-prone, a threshold that remains widely cited.
 We adopt the \texttt{lizard} static-analysis tool, which computes McCabe complexity for Python without requiring compilation.
 
 \subsection{Code Churn and Defect Prediction}
 
-Nagappan and Ball~[4] demonstrated that \emph{relative code churn}---the frequency and volume of changes to a file---is among the strongest predictors of post-release defects in large systems.
+Nagappan and Ball~\cite{nagappan2005} demonstrated that \emph{relative code churn}---the frequency and volume of changes to a file---is among the strongest predictors of post-release defects in large systems.
 Their study of Windows Server 2003 found that churn-based models outperformed size-based models in predictive accuracy.
-Hassan~[5] extended this line of work by showing that the \emph{entropy of changes} (how spread out the modifications are) further improves fault-proneness prediction.
+Hassan~\cite{hassan2009} extended this line of work by showing that the \emph{entropy of changes} (how spread out the modifications are) further improves fault-proneness prediction.
 
 \subsection{Hotspot Analysis}
 
-Tornhill~[6] synthesised complexity and churn research into a practical technique he calls \emph{hotspot analysis}: files that are \emph{both} complex and frequently changed are the ones most likely to harbour latent defects.
+Tornhill~\cite{tornhill2015} synthesised complexity and churn research into a practical technique he calls \emph{hotspot analysis}: files that are \emph{both} complex and frequently changed are the ones most likely to harbour latent defects.
 The key insight is that high complexity is tolerable in stable code (it rarely triggers bugs if nobody touches it), and high churn is manageable in simple code (simple changes are less likely to introduce faults).
 The dangerous intersection---high complexity \emph{and} high churn---defines a hotspot.
 
 \subsection{Mining Software Repositories for Bug-Fix Patterns}
 
-Spadini et al.~[11] developed \texttt{PyDriller}, a Python framework for mining Git repositories, which we use in this study.
-A common heuristic in MSR (Mining Software Repositories) research is to classify a commit as a \emph{bug-fix} when its message contains keywords such as ``fix'', ``bug'', ``issue'', ``resolve'', ``patch'', or ``error''~[10].
-While this keyword-based approach is imperfect (it may miss some fixes and mis-classify some non-fixes), Mockus and Votta~[10] showed that it correctly identifies roughly 60--70\% of true bug-fix commits, making it a practical proxy for defect density.
+Spadini et al.~\cite{spadini2018} developed \texttt{PyDriller}, a Python framework for mining Git repositories, which we use in this study.
+A common heuristic in MSR (Mining Software Repositories) research is to classify a commit as a \emph{bug-fix} when its message contains keywords such as ``fix'', ``bug'', ``issue'', ``resolve'', ``patch'', or ``error''~\cite{mockus2000}.
+While this keyword-based approach is imperfect (it may miss some fixes and mis-classify some non-fixes), Mockus and Votta~\cite{mockus2000} showed that it correctly identifies roughly 60--70\% of true bug-fix commits, making it a practical proxy for defect density.
 
 \subsection{Code Smells}
 
-Fowler and Beck~[9] catalogued recurring structural problems---\emph{code smells}---that indicate deeper design issues.
+Fowler and Beck~\cite{fowlerbeck1999} catalogued recurring structural problems---\emph{code smells}---that indicate deeper design issues.
 Relevant smells for this study include \emph{Long Method}, \emph{God Class} (or God Module), and \emph{Shotgun Surgery} (a single change requiring edits to many files).
 Large files with many functions and high complexity are symptomatic of God Modules, while files with extreme churn and high lines-added/deleted ratios suggest Shotgun Surgery.
 
@@ -278,10 +278,10 @@ Classify into quadrants $\rightarrow$ assign actions $\rightarrow$ produce prior
 \subsection{Phase 1: Data Collection}
 
 \paragraph{Static analysis.}
-The script \texttt{extract\_complexity.py} invokes \texttt{lizard}~[13] on each cloned repository, excluding test directories (\texttt{*/tests/*}, \texttt{*/test\_*}). For every Python file it records NLOC, token count, average CCN across all functions, and function count.
+The script \texttt{extract\_complexity.py} invokes \texttt{lizard}~\cite{yin2023} on each cloned repository, excluding test directories (\texttt{*/tests/*}, \texttt{*/test\_*}). For every Python file it records NLOC, token count, average CCN across all functions, and function count.
 
 \paragraph{History mining.}
-The script \texttt{extract\_history.py} uses \texttt{PyDriller}~[11] to traverse every commit from the past two years.
+The script \texttt{extract\_history.py} uses \texttt{PyDriller}~\cite{spadini2018} to traverse every commit from the past two years.
 For each modified Python file (excluding tests), it increments the churn counter and, if the commit message contains any of six bug-related keywords (\texttt{fix}, \texttt{bug}, \texttt{issue}, \texttt{resolve}, \texttt{patch}, \texttt{error}), increments the bug-fix counter.
 It also accumulates total lines added and deleted.
 
@@ -297,7 +297,7 @@ The composite \textbf{hotspot score} is computed as:
     +\frac{\text{bug\_fixes}}{\max(\text{bug\_fixes})}
   \right)
 \]
-Equal weighting was chosen for simplicity and transparency; in a production setting, weights could be learned from labelled defect data~[4].
+Equal weighting was chosen for simplicity and transparency; in a production setting, weights could be learned from labelled defect data~\cite{nagappan2005}.
 
 \subsection{Phase 3: Analysis and Validation}
 
@@ -358,12 +358,12 @@ Table~\ref{tab:metric_defs} defines every metric collected or derived in this st
 \toprule
 \textbf{Metric} & \textbf{Source} & \textbf{What it captures} \\
 \midrule
-NLOC             & \texttt{lizard}     & Non-comment lines of code; proxy for module size. Large modules indicate potential God Class smell~[9]. \\
+NLOC             & \texttt{lizard}     & Non-comment lines of code; proxy for module size. Large modules indicate potential God Class smell~\cite{fowlerbeck1999}. \\
 Token count      & \texttt{lizard}     & Total lexical tokens; a finer-grained size measure than NLOC. \\
-Avg.\ CCN        & \texttt{lizard}     & Mean cyclomatic complexity over all functions in the file. CCN\,$>$\,10 = moderate risk, CCN\,$>$\,20 = high risk~[2]. \\
+Avg.\ CCN        & \texttt{lizard}     & Mean cyclomatic complexity over all functions in the file. CCN\,$>$\,10 = moderate risk, CCN\,$>$\,20 = high risk~\cite{mccabe1976}. \\
 Function count   & \texttt{lizard}     & Number of callable units; combined with NLOC helps detect God Modules. \\
-Churn            & \texttt{PyDriller}  & Number of commits that touched the file in the past two years. Strong defect predictor~[4]. \\
-Bug-fix count    & \texttt{PyDriller}  & Subset of churn commits whose message matches bug keywords~[10]. \\
+Churn            & \texttt{PyDriller}  & Number of commits that touched the file in the past two years. Strong defect predictor~\cite{nagappan2005}. \\
+Bug-fix count    & \texttt{PyDriller}  & Subset of churn commits whose message matches bug keywords~\cite{mockus2000}. \\
 Lines added      & \texttt{PyDriller}  & Cumulative lines inserted; captures volume of change. \\
 Lines deleted    & \texttt{PyDriller}  & Cumulative lines removed; high deletion often signals refactoring or instability. \\
 Bug-fix ratio    & Derived             & $= \text{bug\_fixes}/\text{churn}$; proportion of changes that are corrective. \\
@@ -483,7 +483,7 @@ Complexity $\leftrightarrow$ Bug-fixes   & $r=-0.109\;(p=4.8\times10^{-7})$ & $r
 \end{table}
 
 The churn--bug-fix correlation is near-perfect in both projects: files that change frequently are overwhelmingly more likely to be the target of corrective (bug-fix) commits.
-Complexity alone shows a weak or non-significant relationship with bug-fixes, which \emph{validates the hotspot model}: it is the combination of complexity and churn that matters, not either metric in isolation~[6].
+Complexity alone shows a weak or non-significant relationship with bug-fixes, which \emph{validates the hotspot model}: it is the combination of complexity and churn that matters, not either metric in isolation~\cite{tornhill2015}.
 
 \subsubsection{Bug-Fix Ratio by Complexity Quartile}
 
@@ -497,7 +497,7 @@ Figure~\ref{fig:bugfix_quartile} groups files into four complexity quartiles and
 \end{figure}
 
 In both projects, the Q4 (highest-complexity) group has a meaningfully higher bug-fix ratio than Q1.
-This confirms that, holding churn constant, complex code requires proportionally more corrective maintenance---supporting McCabe's original thesis~[2] and Basili and Perricone's empirical findings~[3].
+This confirms that, holding churn constant, complex code requires proportionally more corrective maintenance---supporting McCabe's original thesis~\cite{mccabe1976} and Basili and Perricone's empirical findings~\cite{basili1984}.
 
 \subsubsection{Top-File Overlap}
 
@@ -509,7 +509,7 @@ This high overlap confirms that the composite hotspot score is capturing genuine
 
 \subsubsection{Churn and Complexity Distributions}
 
-Figure~\ref{fig:churn_dist} reveals a heavy-tailed (near power-law) distribution of churn: a small fraction of files absorbs the vast majority of changes, consistent with the Pareto principle widely observed in software evolution research~[5].
+Figure~\ref{fig:churn_dist} reveals a heavy-tailed (near power-law) distribution of churn: a small fraction of files absorbs the vast majority of changes, consistent with the Pareto principle widely observed in software evolution research~\cite{hassan2009}.
 
 \begin{figure}[!htb]
 \centering
@@ -530,7 +530,7 @@ Figure~\ref{fig:complexity_dist} shows that most files have low complexity (CCN\
 \FloatBarrier
 \subsubsection{File Size vs.\ Complexity (God Module Detection)}
 
-Large files with many functions and elevated complexity are symptomatic of the \emph{God Module} code smell~[9].
+Large files with many functions and elevated complexity are symptomatic of the \emph{God Module} code smell~\cite{fowlerbeck1999}.
 Figure~\ref{fig:nloc_complexity} plots NLOC against average CCN (bubble size $\propto$ churn).
 
 \begin{figure}[!htb]
@@ -643,18 +643,18 @@ The hotspot concentration differs architecturally: in Transformers the risk cent
 
 \paragraph{Construct validity.}
 The bug-fix keyword heuristic is an imperfect proxy for true defect counts.
-Mockus and Votta~[10] estimate its precision at roughly 60--70\%.
+Mockus and Votta~\cite{mockus2000} estimate its precision at roughly 60--70\%.
 Some bug-fix commits may omit these keywords, and some non-bug commits (e.g.\ ``fix typo in docstring'') may be falsely classified.
 A more robust approach would link commits to issue trackers, but this was beyond the scope of a lab-scale study.
 
 \paragraph{Internal validity.}
 The composite score uses equal weights for churn, complexity, and bug-fixes.
-In practice, one metric may be a stronger predictor than the others for a given project; learning optimal weights from labelled defect data~[4] could improve ranking accuracy.
+In practice, one metric may be a stronger predictor than the others for a given project; learning optimal weights from labelled defect data~\cite{nagappan2005} could improve ranking accuracy.
 Additionally, the two-year history window may miss older, deeply embedded debt.
 
 \paragraph{External validity.}
 The study examines only two Python repositories.
-The hotspot technique is language-agnostic in principle, but the specific metric thresholds (e.g.\ McCabe's CCN=10 boundary) were calibrated on C/Fortran code~[2] and may not transfer directly to Python, where language idioms like list comprehensions can compress control flow.
+The hotspot technique is language-agnostic in principle, but the specific metric thresholds (e.g.\ McCabe's CCN=10 boundary) were calibrated on C/Fortran code~\cite{mccabe1976} and may not transfer directly to Python, where language idioms like list comprehensions can compress control flow.
 
 \paragraph{Confounding factors.}
 Churn is partly a function of module centrality---core files are changed more often simply because they are imported by more modules.
@@ -672,18 +672,18 @@ Before undertaking the analysis, we formulated three expected outcomes based on 
 
 \begin{enumerate}[leftmargin=2em]
   \item \textbf{A small number of files will dominate the risk landscape.}
-        Nagappan and Ball~[4] and Tornhill~[6] predict that defects follow a Pareto distribution.
+        Nagappan and Ball~\cite{nagappan2005} and Tornhill~\cite{tornhill2015} predict that defects follow a Pareto distribution.
         \emph{Result: confirmed.}
         In Transformers, the top~3 files (0.14\% of the codebase) account for 776 of 3\,474 total bug-fix-related file touches ($\approx$22\%).
         In Django, the top~3 files (0.76\%) account for 100 of 430 ($\approx$23\%).
 
   \item \textbf{Churn will be a stronger predictor of bugs than complexity.}
-        Prior work~[4,\,5] consistently finds churn superior to static metrics.
+        Prior work~\cite{nagappan2005,hassan2009} consistently finds churn superior to static metrics.
         \emph{Result: confirmed.}
         Churn correlates with bug-fixes at $r > 0.96$ in both projects, while complexity correlates at $|r| < 0.12$.
 
   \item \textbf{The hotspot model will surface architecturally central modules.}
-        Kazman et al.~[12] showed that technical debt concentrates in architectural ``hubs.''
+        Kazman et al.~\cite{kazman2015} showed that technical debt concentrates in architectural ``hubs.''
         \emph{Result: confirmed.}
         The top hotspots are precisely the central infrastructure files: \texttt{modeling\_utils.py} in Transformers, \texttt{models/query.py} in Django.
 \end{enumerate}
@@ -691,23 +691,47 @@ Before undertaking the analysis, we formulated three expected outcomes based on 
 All three expectations are borne out by the data, lending confidence to the hotspot identification approach and confirming its suitability as a practical technical-debt management tool for real-world software teams.
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section*{References}
+\begin{thebibliography}{99}
 \addcontentsline{toc}{section}{References}
 
-\begin{enumerate}[leftmargin=2em, label={[\arabic*]}]
-  \item W.\ Cunningham, ``The WyCash Portfolio Management System,'' \emph{OOPSLA Experience Report}, 1992.
-  \item T.\ J.\ McCabe, ``A Complexity Measure,'' \emph{IEEE Trans.\ Software Engineering}, vol.\ SE-2, no.\ 4, pp.\ 308--320, 1976.
-  \item V.\ R.\ Basili and B.\ T.\ Perricone, ``Software Errors and Complexity: An Empirical Investigation,'' \emph{Comm.\ ACM}, vol.\ 27, no.\ 1, pp.\ 42--52, 1984.
-  \item N.\ Nagappan and T.\ Ball, ``Use of Relative Code Churn Measures to Predict System Defect Density,'' \emph{Proc.\ 27th ICSE}, pp.\ 284--292, 2005.
-  \item A.\ E.\ Hassan, ``Predicting Faults Using the Complexity of Code Changes,'' \emph{Proc.\ 31st ICSE}, pp.\ 78--88, 2009.
-  \item A.\ Tornhill, \emph{Your Code as a Crime Scene}, Pragmatic Bookshelf, 2015.
-  \item P.\ Kruchten, R.\ L.\ Nord, and I.\ Ozkaya, ``Technical Debt: From Metaphor to Theory and Practice,'' \emph{IEEE Software}, vol.\ 29, no.\ 6, pp.\ 18--21, 2012.
-  \item M.\ Fowler, ``Technical Debt,'' \url{https://martinfowler.com/bliki/TechnicalDebt.html}, 2009.
-  \item M.\ Fowler and K.\ Beck, \emph{Refactoring: Improving the Design of Existing Code}, Addison-Wesley, 1999.
-  \item A.\ Mockus and L.\ G.\ Votta, ``Identifying Reasons for Software Changes Using Historic Databases,'' \emph{Proc.\ ICSM}, pp.\ 120--130, 2000.
-  \item G.\ Spadini, M.\ Aniche, and A.\ Bacchelli, ``PyDriller: Python Framework for Mining Software Repositories,'' \emph{Proc.\ ESEC/FSE}, pp.\ 908--911, 2018.
-  \item R.\ Kazman, Y.\ Cai, R.\ Mo, Q.\ Feng, L.\ Xiao, S.\ Haziyev, V.\ Fedak, and A.\ Shapochka, ``A Case Study in Locating the Architectural Roots of Technical Debt,'' \emph{Proc.\ 37th ICSE}, vol.\ 2, pp.\ 179--188, 2015.
-  \item T.\ Yin, ``Lizard: A Modern Code Complexity Analyzer,'' \url{https://github.com/terryyin/lizard}, 2023.
-\end{enumerate}
+\bibitem{cunningham1992}
+W.\ Cunningham, ``The WyCash Portfolio Management System,'' \emph{OOPSLA Experience Report}, 1992.
+
+\bibitem{mccabe1976}
+T.\ J.\ McCabe, ``A Complexity Measure,'' \emph{IEEE Trans.\ Software Engineering}, vol.\ SE-2, no.\ 4, pp.\ 308--320, 1976.
+
+\bibitem{basili1984}
+V.\ R.\ Basili and B.\ T.\ Perricone, ``Software Errors and Complexity: An Empirical Investigation,'' \emph{Comm.\ ACM}, vol.\ 27, no.\ 1, pp.\ 42--52, 1984.
+
+\bibitem{nagappan2005}
+N.\ Nagappan and T.\ Ball, ``Use of Relative Code Churn Measures to Predict System Defect Density,'' \emph{Proc.\ 27th ICSE}, pp.\ 284--292, 2005.
+
+\bibitem{hassan2009}
+A.\ E.\ Hassan, ``Predicting Faults Using the Complexity of Code Changes,'' \emph{Proc.\ 31st ICSE}, pp.\ 78--88, 2009.
+
+\bibitem{tornhill2015}
+A.\ Tornhill, \emph{Your Code as a Crime Scene}, Pragmatic Bookshelf, 2015.
+
+\bibitem{kruchten2012}
+P.\ Kruchten, R.\ L.\ Nord, and I.\ Ozkaya, ``Technical Debt: From Metaphor to Theory and Practice,'' \emph{IEEE Software}, vol.\ 29, no.\ 6, pp.\ 18--21, 2012.
+
+\bibitem{fowler2009}
+M.\ Fowler, ``Technical Debt,'' \url{https://martinfowler.com/bliki/TechnicalDebt.html}, 2009.
+
+\bibitem{fowlerbeck1999}
+M.\ Fowler and K.\ Beck, \emph{Refactoring: Improving the Design of Existing Code}, Addison-Wesley, 1999.
+
+\bibitem{mockus2000}
+A.\ Mockus and L.\ G.\ Votta, ``Identifying Reasons for Software Changes Using Historic Databases,'' \emph{Proc.\ ICSM}, pp.\ 120--130, 2000.
+
+\bibitem{spadini2018}
+G.\ Spadini, M.\ Aniche, and A.\ Bacchelli, ``PyDriller: Python Framework for Mining Software Repositories,'' \emph{Proc.\ ESEC/FSE}, pp.\ 908--911, 2018.
+
+\bibitem{kazman2015}
+R.\ Kazman, Y.\ Cai, R.\ Mo, Q.\ Feng, L.\ Xiao, S.\ Haziyev, V.\ Fedak, and A.\ Shapochka, ``A Case Study in Locating the Architectural Roots of Technical Debt,'' \emph{Proc.\ 37th ICSE}, vol.\ 2, pp.\ 179--188, 2015.
+
+\bibitem{yin2023}
+T.\ Yin, ``Lizard: A Modern Code Complexity Analyzer,'' \url{https://github.com/terryyin/lizard}, 2023.
+\end{thebibliography}
 
 \end{document}
