@@ -60,3 +60,7 @@ pdflatex -interaction=nonstopmode report.tex
 ```
 
 The output file is `report.pdf`.
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.
