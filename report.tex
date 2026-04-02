@@ -20,6 +20,11 @@
 \usepackage{tabularx}
 \usepackage{placeins}
 
+\definecolor{covernavy}{HTML}{17324D}
+\definecolor{coverblue}{HTML}{2C5E91}
+\definecolor{covergold}{HTML}{C38C2D}
+\definecolor{coverpanel}{HTML}{F3F6F9}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=blue!60!black,
@@ -43,47 +48,79 @@
 % ─── Title Page ───────────────────────────────────────────────────────────────
 \pagenumbering{Alph}
 \begin{titlepage}
+\thispagestyle{empty}
 \centering
 
-\vspace*{0.8cm}
+\vspace*{0.25cm}
 
-{\LARGE\bfseries Technical Debt and Hotspot Identification:\\[4pt]
-Complexity, Churn, and Code Smell Analysis\par}
+{\Large\bfseries\color{covernavy}VELLORE INSTITUTE OF TECHNOLOGY\par}
+\vspace{0.15cm}
+{\normalsize\color{coverblue}Software Engineering Case Study Report\par}
+\vspace{0.28cm}
+{\color{covergold}\rule{0.72\textwidth}{1.2pt}\par}
 
-\vspace{0.6cm}
+\vspace{0.5cm}
+\includegraphics[width=3.15cm]{VIT_logo.png}
 
-{\large A Case Study on Evaluating Hotspot Identification\\
-in \texttt{django/django} and \texttt{huggingface/transformers}\par}
+\vspace{0.55cm}
+{\Large\bfseries\color{coverblue}Case Study No.\ 12\par}
+\vspace{0.22cm}
+{\LARGE\bfseries\color{covernavy}Technical Debt and Hotspot Identification\par}
+\vspace{0.12cm}
+{\large\color{coverblue}Complexity, Churn, and Code Smell Analysis\par}
 
-\vspace{1.2cm}
+\vspace{0.42cm}
+\begin{minipage}{0.84\textwidth}
+\centering
+\color{black!75}
+\normalsize
+A comparative study of hotspot risk, bug-fix history, and remediation
+priorities in \texttt{django/django} and
+\texttt{huggingface/transformers}.
+\end{minipage}
 
-\includegraphics[width=4.5cm]{VIT_logo.png}
-
-\vspace{1.2cm}
-
-\begin{tabular}{r@{\hspace{6pt}:\hspace{6pt}}l}
-\textbf{Course}          & Software Engineering \\[4pt]
-\textbf{Case Study No}   & 12 \\
-\end{tabular}
-
-\vspace{1cm}
-
-{\large\bfseries Submitted By\par}
-
-\vspace{0.4cm}
-
-\begin{tabular}{r@{\hspace{6pt}:\hspace{6pt}}l}
-\textbf{Name}     & Vaibhav Sijaria \\[4pt]
-\textbf{Reg.\ No} & 23BCI0063 \\
-\end{tabular}
-
-\vspace{0.8cm}
-
-{\textbf{Date:} 6\textsuperscript{th} April 2026\par}
+\vspace{0.7cm}
+\makebox[\textwidth][c]{%
+\fcolorbox{coverblue}{coverpanel}{%
+\begin{minipage}[t]{0.39\textwidth}
+\raggedright
+{\color{covernavy}\bfseries Academic Details\par}
+\vspace{0.28cm}
+\small
+{\bfseries Course\par}
+Software Engineering\par
+\vspace{0.22cm}
+{\bfseries Case Study No.\par}
+12\par
+\vspace{0.22cm}
+{\bfseries Focus\par}
+Hotspot analysis using complexity, churn, and bug-fix history\par
+\end{minipage}%
+}%
+\hspace{0.025\textwidth}%
+\fcolorbox{coverblue}{coverpanel}{%
+\begin{minipage}[t]{0.35\textwidth}
+\raggedright
+{\color{covernavy}\bfseries Submission Details\par}
+\vspace{0.28cm}
+\small
+{\bfseries Submitted By\par}
+Vaibhav Sijaria\par
+\vspace{0.22cm}
+{\bfseries Registration No.\par}
+23BCI0063\par
+\vspace{0.22cm}
+{\bfseries Submission Date\par}
+6 April 2026\par
+\end{minipage}%
+}%
+}
 
 \vfill
 
-{\large Vellore Institute of Technology\par}
+{\large\color{covernavy}\bfseries Vellore Institute of Technology\par}
+\vspace{0.15cm}
+{\normalsize\color{black!65}Department of Software Engineering Coursework\par}
 
 \end{titlepage}
 
